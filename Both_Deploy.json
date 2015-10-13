@@ -1,0 +1,74 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "websitename": { "type": "string" },
+    "hostingApplicationPlan": { "type": "string" },
+    "newStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Storage Account"
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS"
+      ],
+      "metadata": {
+        "description": "Storage Account type"
+      }
+    },
+    "location": {
+      "type": "string",
+      "allowedValues": [
+        "East US",
+        "West US",
+        "West Europe",
+        "East Asia",
+        "Southeast Asia"
+      ],
+      "metadata": {
+        "description": "Location of storage account"
+      }
+    }
+  },
+  "resources": [
+    /* Storage Account */
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('newStorageAccountName')]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "properties": {
+        "accountType": "[parameters('storageAccountType')]"
+      }
+    },
+    /* Website */
+    {
+      "type": "Microsoft.Web/sites",
+      "location": "[parameters('location')]",
+      "name": "[parameters('websitename')]",
+      "apiVersion": "2014-06-01",
+      "properties": {
+        "serverFarm": "[parameters('hostingApplicationPlan')]"
+      }
+    },
+    /*CREATE SERVICEBUS*/
+    {
+      "location": "[parameters('location')]",
+      "apiVersion": "2015-01-01",
+      "type": "Microsoft.Resources/deployments",
+      "name": "",
+      "properties": { "mode": "Incremental" },
+      "dependsOn": [ "[concat('Microsoft.Web/serverFarms/', parameters('hostingApplicationPlan'))]" ],
+      "tags": {
+        "[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingApplicationPlan'))]": "empty"
+      }
+
+    }
+  ]
+}

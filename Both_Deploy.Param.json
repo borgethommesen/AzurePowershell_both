@@ -1,0 +1,23 @@
+{
+
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+ 
+    "newStorageAccountName": {
+      "value": "bothatdev"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "location": {
+      "value": "West Europe"
+    },
+    "websitename": {
+      "value": "bothwebsitename"
+    },
+    "hostingApplicationPlan": {
+      "value": "bothApplan"
+    }
+  }
+}
